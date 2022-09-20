@@ -25,3 +25,13 @@ hs_err_pid*
 #package
 token/
 com.example.telegrambot.token/
+
+#lof4j
+src/main/resources/log4j2.xml
+log4j2.xml
+resources/
+target/classes/log4j.properties
+log4j.properties
+log4j2.xml
+
+
