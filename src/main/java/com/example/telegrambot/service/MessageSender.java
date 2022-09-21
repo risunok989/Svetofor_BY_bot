@@ -8,6 +8,7 @@ import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.meta.api.methods.send.SendSticker;
 import org.telegram.telegrambots.meta.api.objects.Message;
 
+// обработчик очереди сообщений, которые нужно отправить пользователю.
 public class MessageSender implements Runnable {
     private static final Logger log = LogManager.getLogger(MessageSender.class);
     private final int SENDER_SLEEP_TIME = 1000;

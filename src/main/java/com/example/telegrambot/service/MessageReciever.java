@@ -11,32 +11,38 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import com.example.telegrambot.command.Command;
 
+
+// обработчик полученных сообщений
 public class MessageReciever implements Runnable {
+    // наследуемся от Runnable
     private static final Logger log = LogManager.getLogger(MessageReciever.class);
     private final int WAIT_FOR_NEW_MESSAGE_DELAY = 1000;
-    private Bot bot;
-    private Parser parser;
 
+    private Bot bot;
+
+    private Parser parser;
+                     // передаём в конструктор обьект класса Bot, что б брать из него обьекты для анализа.
     public MessageReciever(Bot bot) {
         this.bot = bot;
         parser = new Parser(bot.getBotUsername());
     }
 
+    // Реализуем поток приёма
     @Override
     public void run() {
         log.info("[STARTED THREAD] MsgReciever.  Bot class: " + bot);
-        while (true) {
+        while (true) {   //в вечном цикле проверяем наличие новых сообщений
             for (Object object = bot.receiveQueue.poll(); object != null; object = bot.receiveQueue.poll()) {
                 log.debug("New object for analyze in queue " + object.toString());
 
-                try {
+                try {  // отправляем на анализ object ( фото, видео, текст)
                     analyze(object);
                 } catch (Exception e) {
                     log.error("Exception in update analyze", e);
                 }
             }
             try {
-                Thread.sleep(WAIT_FOR_NEW_MESSAGE_DELAY);
+                Thread.sleep(WAIT_FOR_NEW_MESSAGE_DELAY);  // задержка потока на 1с
             } catch (InterruptedException e) {
                 log.error("Catch interrupt. Exit", e);
                 return;
@@ -46,8 +52,10 @@ public class MessageReciever implements Runnable {
     }
 
     private void analyze(Object object) {
+        // Методом instanceof проверяю принадлежность object к классу Update (был ли создан на основе
+        // его класса (Update).
         if (object instanceof Update) {
-            Update update = (Update) object;
+            Update update = (Update) object;  // Object обратно в Update
             log.debug("Update recieved: " + update.toString());
             analyzeForCallBackOrText(update);
         } else log.warn("Cant method 'analyze'  of object: " + object.toString());
@@ -55,6 +63,7 @@ public class MessageReciever implements Runnable {
 
     }
 
+    // Проверяем явлеется ли Update текстом, либо CallBack от пользователя.
     private void analyzeForCallBackOrText(Update update) {
         if (update.hasMessage()) {
             analyzeForUpdateType(update);

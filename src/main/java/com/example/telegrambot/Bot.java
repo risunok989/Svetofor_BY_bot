@@ -13,6 +13,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class Bot extends TelegramLongPollingBot {
 
+    //добавил 2 очереди
     public static final Queue<Object> sendQueue = new ConcurrentLinkedQueue<>();
     public static final Queue<Object> receiveQueue = new ConcurrentLinkedQueue<>();
 
@@ -21,14 +22,13 @@ public class Bot extends TelegramLongPollingBot {
 
     public String getBotUsername() {
         return Token.getTokenBotUsername();
-//        return "Svetofor_BY_bot";
     }
 
     public String getBotToken() {
         return Token.getTokenBotToken();
-//        return "5384659247:AAG9CS7x4Dk_HRt6kDkzeuu9PWFRJAbhMDY";
     }
 
+    // Передаю обновления в очередь обработки входящих
     @Override
     public void onUpdateReceived(Update update) {
         log.info("new update");
