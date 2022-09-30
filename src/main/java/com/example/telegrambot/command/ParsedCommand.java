@@ -1,5 +1,6 @@
 package com.example.telegrambot.command;
 
+// Класс, помогающий установить флаг на команде, запрошенной пользователем, а так же текст его.
 public class ParsedCommand {
     Command command = Command.NONE;
     String text = "";

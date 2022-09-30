@@ -10,25 +10,33 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 
 // обработчик очереди сообщений, которые нужно отправить пользователю.
 public class MessageSender implements Runnable {
-    private static final Logger log = LogManager.getLogger(MessageSender.class);
-    private final int SENDER_SLEEP_TIME = 1000;
+    enum MessageType {
+        EXECUTE, STICKER, NOT_DETECTED, PHOTO
+    }
+
     private Bot bot;
 
+    // передаём в конструктор обьект класса Bot, что б брать из него обьекты для анализа.
     public MessageSender(Bot bot) {
         this.bot = bot;
     }
+
+    private static final Logger log = LogManager.getLogger(MessageSender.class);
+    private final int SENDER_SLEEP_TIME = 1000;
+
 
     @Override
     public void run() {
         log.info("[STARTED THREAD] MsgSender.  Bot class: " + bot);
         try {
             while (true) {
+                // Проверяю есть ли в очереди на отправку, если да, передаю send().
                 for (Object object = bot.sendQueue.poll(); object != null; object = bot.sendQueue.poll()) {
                     log.debug("Get new msg to send " + object);
                     send(object);
                 }
                 try {
-                    Thread.sleep(SENDER_SLEEP_TIME);
+                    Thread.sleep(SENDER_SLEEP_TIME); // Усыпляю поток 1с
                 } catch (InterruptedException e) {
                     log.error("Take interrupt while operate msg list", e);
                 }
@@ -39,8 +47,9 @@ public class MessageSender implements Runnable {
     }
 
     private void send(Object object) {
+        //Проверяю тип сообщения в методе checkMessageType и возрвращаю ENUM.
         try {
-            MessageType messageType = messageType(object);
+            MessageType messageType = checkMessageType(object);
 
             switch (messageType) {
                 case EXECUTE:
@@ -51,7 +60,7 @@ public class MessageSender implements Runnable {
                 case STICKER:
                     SendSticker sendSticker = (SendSticker) object;
                     log.debug("send method use SendSticker for " + object);
-//                    bot.sendSticker(sendSticker);
+                    bot.execute(sendSticker);
                     break;
                 case PHOTO:
                     log.debug("send method use SendPhoto for " + object);
@@ -65,14 +74,12 @@ public class MessageSender implements Runnable {
         }
     }
 
-    private MessageType messageType(Object object) {
+    private MessageType checkMessageType(Object object) {
         if (object instanceof SendSticker) return MessageType.STICKER;
         if (object instanceof BotApiMethod) return MessageType.EXECUTE;
         if (object instanceof SendPhoto) return MessageType.PHOTO;
         return MessageType.NOT_DETECTED;
     }
 
-    enum MessageType {
-        EXECUTE, STICKER, NOT_DETECTED, PHOTO
-    }
+
 }

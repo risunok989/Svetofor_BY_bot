@@ -7,5 +7,8 @@ public enum Command {
     CALLBACK, START, HELP, STOP, NOTIFY,
     ID, STICKER, TEXT_CONTAIN_EMOJI,
 
-    ALL, NEW, CATALOG
+    ALL, NEW, CATALOG,
+
+    // ТЕКСТ С КЛАВИАТУРЫ
+    CATEGORY;
 }

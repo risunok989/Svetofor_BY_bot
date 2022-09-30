@@ -18,9 +18,13 @@ public class Parser {
     }
 
 
+
+    // Метод для обработки текста и получения экземляра ParsedCommand с командой пользователя.
     public ParsedCommand getParsedCommand(String text) {
         String trimText = "";
+        // методом trim() убираем пробелы в тексте (в начале и конце)
         if (text != null) trimText = text.trim();
+        // Создаю "болванку" ParsedCommand, с текстом пользователя.
         ParsedCommand result = new ParsedCommand(Command.NONE, trimText);
 
         switch (text) {
@@ -36,9 +40,16 @@ public class Parser {
             case "NOTIFY":
                 result = new ParsedCommand(Command.NOTIFY, trimText);
                 return result;
+                // КОМАНДЫ ВВЕДЁННЫЕ С КЛАВИАТУРЫ
+            case "категории товаров." :
+                result = new ParsedCommand(Command.CATEGORY, Command.CATEGORY.toString());
+                return result;
+
+
         }
 
         if ("".equals(trimText)) return result;
+
         Pair<String, String> commandAndText = getDelimitedCommandFromText(trimText);
         if (isCommand(commandAndText.getFirst())) {
             if (isCommandForMe(commandAndText.getFirst())) {

@@ -6,6 +6,8 @@ import org.apache.logging.log4j.Logger;
 import org.json.simple.parser.ParseException;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.methods.send.SendSticker;
+import org.telegram.telegrambots.meta.api.objects.InputFile;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 import com.example.telegrambot.service.MessageReciever;
@@ -30,13 +32,14 @@ public class Main {
         try {
             TelegramBotsApi telegramBotsApi = new TelegramBotsApi(DefaultBotSession.class);
             telegramBotsApi.registerBot(new Bot());
-            log.debug("TelegramAPI started. Look for messages");
+            log.debug("TelegramAPI запущены. Бот работает.");
 
         } catch (TelegramApiException e) {
-            log.fatal("Cant Connect.");
+            log.fatal("Не может запустится.");
             e.printStackTrace();
         }
 
+        // Запускаю 2 потока, указав, что они "демоны".
         MessageReciever messageReciever = new MessageReciever(bot);
         MessageSender messageSender = new MessageSender(bot);
 
@@ -53,13 +56,25 @@ public class Main {
         sender.start();
 
         sendStartReport(bot);
+//        sendStartReportSticker(bot);
     }
 
     private static void sendStartReport(Bot bot) {
         SendMessage sendMessage = new SendMessage();
         sendMessage.setChatId(BOT_ADMIN);
         sendMessage.setText("Запустился");
+
         bot.sendQueue.add(sendMessage);
+
+    }private static void sendStartReportSticker(Bot bot) {
+        SendSticker sendSticker = new SendSticker();
+        sendSticker.setChatId(BOT_ADMIN);
+        InputFile inputFile = new InputFile("CAACAgIAAxkBAAEF569jLL92Q9-VQU4fw01KYpUyT3se2AACfxAAAlYRUEtZGn4ltGEdSykE");
+        sendSticker.setSticker(inputFile);
+
+
+        bot.sendQueue.add(sendSticker);
+
     }
 
     }

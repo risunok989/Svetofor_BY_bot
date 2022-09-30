@@ -45,7 +45,7 @@ public class SystemHandler extends AbstractHandler {
         sendMessage.enableMarkdown(true);
         StringBuilder text = new StringBuilder();
         text.append("Привет. Я  *").append(bot.getBotUsername()).append("*").append(END_LINE);
-        text.append("Я создан для помощи в поиске товаров, а так же" +
+        text.append("Cоздан для помощи в поиске товаров, а так же" +
                 " извещения об новых поступлениях товара в сети магазинов" +
                 " *\"Светофор\"* Республики Беларусь.").append(END_LINE);
         text.append("Узнать что я могу - Вы можете нажав на [/help](/help)");
